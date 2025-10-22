@@ -44,20 +44,20 @@ java -jar target/mcp-server-java-1.0.0.jar
 
 ## Testing out the tools :
 
-HTTP JSON API Server started successfully!
-API Endpoints:
-  http://localhost:8080/tools         - List available tools
-  http://localhost:8080/tools/add     - Add two numbers
-  http://localhost:8080/tools/multiply - Multiply two numbers
-  http://localhost:8080/tools/time    - Get current time
-  http://localhost:8080/tools/greet   - Greet by name
+<br>HTTP JSON API Server started successfully!
+<br>API Endpoints:
+ <br> http://localhost:8080/tools         - List available tools
+<br>  http://localhost:8080/tools/add     - Add two numbers
+<br>  http://localhost:8080/tools/multiply - Multiply two numbers
+<br>  http://localhost:8080/tools/time    - Get current time
+<br>  http://localhost:8080/tools/greet   - Greet by name
 
-
-command :  
-add 2 numbers: curl http://localhost:8080/tools/add -Method POST -ContentType "application/json" -Body '{"a":"3","b":"5"}' 
-multiply 2 numbers:  curl http://localhost:8080/tools/multiply -Method POST -ContentType "application/json" -Body '{"x":"7","y":"7.3"}' 
-time : curl http://localhost:8080/tools/time -Method GET -ContentType "application/json" 
-greet :  curl http://localhost:8080/tools/greet -Method POST -ContentType "application/json" -Body '{"name":"Steve"}'
+<br><br><br>
+<br>command :  
+<br>add 2 numbers: curl http://localhost:8080/tools/add -Method POST -ContentType "application/json" -Body '{"a":"3","b":"5"}' 
+<br>multiply 2 numbers:  curl http://localhost:8080/tools/multiply -Method POST -ContentType "application/json" -Body '{"x":"7","y":"7.3"}' 
+<br>time : curl http://localhost:8080/tools/time -Method GET -ContentType "application/json" 
+<br>greet :  curl http://localhost:8080/tools/greet -Method POST -ContentType "application/json" -Body '{"name":"Steve"}'
 
 🚀 Usage
 ## Start HTTP Server:
@@ -79,6 +79,34 @@ java -jar target/mcp-server-java-1.0.0.jar
 
 ## nxp command to test over web page
 npx @modelcontextprotocol/inspector java -jar target/mcp-server-java-1.0.0.jar
+
+
+## git hub integration
+<br>in command prompt in git directory:
+<br>git status
+<br>On branch main
+<br>nothing to commit, working tree clean
+<br>PS C:\Users\stethompson\Microsoft\MCP_Server_Java> git init
+<br>Reinitialized existing Git repository in C:/Users/stethompson/Microsoft/MCP_Server_Java/.git/
+<br>PS C:\Users\stethompson\Microsoft\MCP_Server_Java> git add .
+<br>PS C:\Users\stethompson\Microsoft\MCP_Server_Java> git remote add origin https://github.com/SteveThompson_msftcae/MCP_SERVER_JAVA.git
+<br>PS C:\Users\stethompson\Microsoft\MCP_Server_Java> git branch -M main
+<br>PS C:\Users\stethompson\Microsoft\MCP_Server_Java> git push -u origin main
+<br>info: please complete authentication in your browser...
+<br>fatal: The request is not supported
+<br>Username for 'https://github.com':
+(authenticated with code)
+<br>PS C:\Users\stethompson\Microsoft\MCP_Server_Java> git push -u origin main
+<br>Enumerating objects: 48, done.
+<br>Counting objects: 100% (48/48), done.
+<br>Delta compression using up to 8 threads
+<br>Compressing objects: 100% (31/31), done.
+<br>Writing objects: 100% (48/48), 23.38 KiB | 1.80 MiB/s, done.
+<br>Total 48 (delta 8), reused 0 (delta 0), pack-reused 0 (from 0)
+<br>remote: Resolving deltas: 100% (8/8), done.
+<br>To https://github.com/SteveThompson_msftcae/MCP_SERVER_JAVA.git
+<br> * [new branch]      main -> main
+<br>branch 'main' set up to track 'origin/main'.
 
 
 
