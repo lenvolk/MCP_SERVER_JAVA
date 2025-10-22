@@ -2,13 +2,14 @@
 
 
 # Run the server
-java -jar target/mcp-server-java-1.0.0.jar
-http:
-java -jar target/mcp-server-java-1.0.0.jar --http
+## Build
+mvn clean package
 
-# Test with MCP Inspector  
+## Run with MCP Inspector
 npx @modelcontextprotocol/inspector java -jar target/mcp-server-java-1.0.0.jar
 
+## Or run directly
+java -jar target/mcp-server-java-1.0.0.jar
 
 ## ✅ Project Status: **SUCCESSFULLY BUILT AND RUNNING**
 
