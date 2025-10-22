@@ -19,7 +19,7 @@ import java.net.http.HttpResponse;
  *     java -jar target/mcp-server-java-1.0.0.jar --http
  *   
  *   Then run this client:
- *     mvn exec:java -Dexec.mainClass="com.example.mcp.client.McpJavaClient"
+ *     mvn exec:java "-Dexec.mainClass=com.example.mcp.client.McpJavaClient"
  */
 public class McpJavaClient {
     private final String baseUrl;
