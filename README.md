@@ -44,20 +44,20 @@ java -jar target/mcp-server-java-1.0.0.jar
 
 ## Testing out the tools :
 
-HTTP JSON API Server started successfully!
-API Endpoints:
-  http://localhost:8080/tools         - List available tools
-  http://localhost:8080/tools/add     - Add two numbers
-  http://localhost:8080/tools/multiply - Multiply two numbers
-  http://localhost:8080/tools/time    - Get current time
-  http://localhost:8080/tools/greet   - Greet by name
+<br>HTTP JSON API Server started successfully!
+<br>API Endpoints:
+ <br> http://localhost:8080/tools         - List available tools
+<br>  http://localhost:8080/tools/add     - Add two numbers
+<br>  http://localhost:8080/tools/multiply - Multiply two numbers
+<br>  http://localhost:8080/tools/time    - Get current time
+<br>  http://localhost:8080/tools/greet   - Greet by name
 
-
-command :  
-add 2 numbers: curl http://localhost:8080/tools/add -Method POST -ContentType "application/json" -Body '{"a":"3","b":"5"}' 
-multiply 2 numbers:  curl http://localhost:8080/tools/multiply -Method POST -ContentType "application/json" -Body '{"x":"7","y":"7.3"}' 
-time : curl http://localhost:8080/tools/time -Method GET -ContentType "application/json" 
-greet :  curl http://localhost:8080/tools/greet -Method POST -ContentType "application/json" -Body '{"name":"Steve"}'
+<br><br><br>
+<br>command :  
+<br>add 2 numbers: curl http://localhost:8080/tools/add -Method POST -ContentType "application/json" -Body '{"a":"3","b":"5"}' 
+<br>multiply 2 numbers:  curl http://localhost:8080/tools/multiply -Method POST -ContentType "application/json" -Body '{"x":"7","y":"7.3"}' 
+<br>time : curl http://localhost:8080/tools/time -Method GET -ContentType "application/json" 
+<br>greet :  curl http://localhost:8080/tools/greet -Method POST -ContentType "application/json" -Body '{"name":"Steve"}'
 
 🚀 Usage
 ## Start HTTP Server:
