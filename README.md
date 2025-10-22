@@ -77,8 +77,10 @@ mvn exec:java "-Dexec.mainClass=com.example.mcp.client.McpJavaClient"
 ## Start STDIO Server:
 java -jar target/mcp-server-java-1.0.0.jar
 
-# nxp command to test over web page
+## nxp command to test over web page
 npx @modelcontextprotocol/inspector java -jar target/mcp-server-java-1.0.0.jar
+
+
 
 
 
