@@ -81,6 +81,34 @@ java -jar target/mcp-server-java-1.0.0.jar
 npx @modelcontextprotocol/inspector java -jar target/mcp-server-java-1.0.0.jar
 
 
+## git hub integration
+<br>in command prompt in git directory:
+<br>git status
+<br>On branch main
+<br>nothing to commit, working tree clean
+<br>PS C:\Users\stethompson\Microsoft\MCP_Server_Java> git init
+<br>Reinitialized existing Git repository in C:/Users/stethompson/Microsoft/MCP_Server_Java/.git/
+<br>PS C:\Users\stethompson\Microsoft\MCP_Server_Java> git add .
+<br>PS C:\Users\stethompson\Microsoft\MCP_Server_Java> git remote add origin https://github.com/SteveThompson_msftcae/MCP_SERVER_JAVA.git
+<br>PS C:\Users\stethompson\Microsoft\MCP_Server_Java> git branch -M main
+<br>PS C:\Users\stethompson\Microsoft\MCP_Server_Java> git push -u origin main
+<br>info: please complete authentication in your browser...
+<br>fatal: The request is not supported
+<br>Username for 'https://github.com':
+(authenticated with code)
+<br>PS C:\Users\stethompson\Microsoft\MCP_Server_Java> git push -u origin main
+<br>Enumerating objects: 48, done.
+<br>Counting objects: 100% (48/48), done.
+<br>Delta compression using up to 8 threads
+<br>Compressing objects: 100% (31/31), done.
+<br>Writing objects: 100% (48/48), 23.38 KiB | 1.80 MiB/s, done.
+<br>Total 48 (delta 8), reused 0 (delta 0), pack-reused 0 (from 0)
+<br>remote: Resolving deltas: 100% (8/8), done.
+<br>To https://github.com/SteveThompson_msftcae/MCP_SERVER_JAVA.git
+<br> * [new branch]      main -> main
+<br>branch 'main' set up to track 'origin/main'.
+
+
 
 ### With Claude Desktop
 
