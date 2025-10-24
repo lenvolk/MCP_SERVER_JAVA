@@ -38,9 +38,23 @@ This will create an executable JAR file: `target/mcp-server-java-1.0.0.jar`
 
 Run the server directly:
 
+🚀 Usage
+## Start HTTP Server:
+java -jar target/mcp-server-java-1.0.0.jar --http
+
+
 ```bash
-java -jar target/mcp-server-java-1.0.0.jar
+java -jar target/mcp-server-java-1.0.0.jar 
 ```
+
+## Run Java Client:
+Working Solution
+Step 1: Start the HTTP Server (in one terminal)
+java -jar target/mcp-server-java-1.0.0.jar --http  (need http server to be running first)
+
+Step 2: Run the Java Client (in another terminal)
+mvn exec:java -Dexec.mainClass=com.example.mcp.client.McpJavaClient
+
 
 ## Testing out the tools :
 
@@ -53,26 +67,24 @@ java -jar target/mcp-server-java-1.0.0.jar
 <br>  http://localhost:8080/tools/greet   - Greet by name
 
 <br><br><br>
-<br>command :  
-<br>add 2 numbers: curl http://localhost:8080/tools/add -Method POST -ContentType "application/json" -Body '{"a":"3","b":"5"}' 
-<br>multiply 2 numbers:  curl http://localhost:8080/tools/multiply -Method POST -ContentType "application/json" -Body '{"x":"7","y":"7.3"}' 
-<br>time : curl http://localhost:8080/tools/time -Method GET -ContentType "application/json" 
-<br>greet :  curl http://localhost:8080/tools/greet -Method POST -ContentType "application/json" -Body '{"name":"Steve"}'
+# List all tools
+curl -X GET http://localhost:8080/tools
+
+# Add two numbers
+curl -X POST http://localhost:8080/tools/add -H "Content-Type: application/json" -d '{"a":"7","b":"51"}'
+
+# Multiply two numbers  
+curl -X POST http://localhost:8080/tools/multiply -H "Content-Type: application/json" -d '{"x":"7","y":"70"}'
+
+# Get current time
+curl -X GET http://localhost:8080/tools/time
+
+# Greet someone
+curl -X POST http://localhost:8080/tools/greet -H "Content-Type: application/json" -d '{"name":"Steve"}'
 
 🚀 Usage
 ## Start HTTP Server:
 java -jar target/mcp-server-java-1.0.0.jar --http
-
-## Run Java Client:
-Working Solution
-Step 1: Start the HTTP Server (in one terminal)
-java -jar target/mcp-server-java-1.0.0.jar --http  (need http server to be running first)
-
-Step 2: Run the Java Client (in another terminal)
-
-
-mvn exec:java "-Dexec.mainClass=com.example.mcp.client.McpJavaClient"
-
 
 ## Start STDIO Server:
 java -jar target/mcp-server-java-1.0.0.jar
