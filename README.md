@@ -55,6 +55,10 @@ java -jar target/mcp-server-java-1.0.0.jar --http  (need http server to be runni
 Step 2: Run the Java Client (in another terminal)
 mvn exec:java -Dexec.mainClass=com.example.mcp.client.McpJavaClient
 
+## NPX Node Package eXecute 
+## nxp command to test over web page
+<br>npx @modelcontextprotocol/inspector java -jar target/mcp-server-java-1.0.0.jar
+<br>create a npx test harness to check out and test the functionality ! 
 
 ## Testing out the tools :
 
@@ -89,8 +93,7 @@ java -jar target/mcp-server-java-1.0.0.jar --http
 ## Start STDIO Server:
 java -jar target/mcp-server-java-1.0.0.jar
 
-## nxp command to test over web page
-npx @modelcontextprotocol/inspector java -jar target/mcp-server-java-1.0.0.jar
+
 
 
 ## git hub integration
