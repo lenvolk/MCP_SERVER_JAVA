@@ -47,13 +47,14 @@ java -jar target/mcp-server-java-1.0.0.jar --http
 java -jar target/mcp-server-java-1.0.0.jar 
 ```
 
-## Run Java Client:
+## Run Java Server:
 Working Solution
 Step 1: Start the HTTP Server (in one terminal)
 java -jar target/mcp-server-java-1.0.0.jar --http  (need http server to be running first)
 
+## Run Java Client:
 Step 2: Run the Java Client (in another terminal)
-mvn exec:java -Dexec.mainClass=com.example.mcp.client.McpJavaClient
+mvn exec:java "-Dexec.mainClass=com.example.mcp.client.McpJavaClient"
 
 ## NPX Node Package eXecute 
 ## nxp command to test over web page
