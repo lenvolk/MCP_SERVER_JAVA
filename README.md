@@ -76,7 +76,7 @@ mvn exec:java "-Dexec.mainClass=com.example.mcp.client.McpJavaClient"
 <br>  http://localhost:8080/tools/multiply - Multiply two numbers
 <br>  http://localhost:8080/tools/time     - Get current time
 <br>  http://localhost:8080/tools/greet    - Greet by name
-<br> http://localhost:8080/tools/ai_chat   - Chat with AI agent
+<br>  http://localhost:8080/tools/ai_chat   - Chat with AI agent
 
 <br><br><br>
 # List all tools
