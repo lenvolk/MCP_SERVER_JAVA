@@ -102,7 +102,7 @@ curl -X POST http://localhost:8080/tools/ai_chat -H "Content-Type: application/j
  # Chat with AI Agent with Optional Parameters
  curl -X POST http://localhost:8080/tools/ai_chat -H "Content-Type: application/json" -d '{"prompt": "Explain Model Context Protocol in simple terms", "max_tokens": 200, "temperature": 0.5 }'
 
-curl -X POST http://localhost:8080/tools/ai_chat -H "Content-Type: application/json" -d '{"prompt": "Write a haiku about coding and show the full response", "max_tokens": 200, "temperature": 0.5 }'
+curl -X POST http://localhost:8080/tools/ai_chat -H "Content-Type: application/json" -d '{"prompt": "Write a haiku about coding", "max_tokens": 200, "temperature": 0.5 }'
 
 🚀 Usage
 ## Start HTTP Server:
