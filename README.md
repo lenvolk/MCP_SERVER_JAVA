@@ -106,6 +106,7 @@ java -jar target/mcp-server-java-1.0.0.jar
 <br>Reinitialized existing Git repository in C:/Users/stethompson/Microsoft/MCP_Server_Java/.git/
 <br>PS C:\Users\stethompson\Microsoft\MCP_Server_Java> git add .
 <br>PS C:\Users\stethompson\Microsoft\MCP_Server_Java> git remote add origin https://github.com/SteveThompson_msftcae/MCP_SERVER_JAVA.git
+<br>git remote -v
 <br>PS C:\Users\stethompson\Microsoft\MCP_Server_Java> git branch -M main
 <br>PS C:\Users\stethompson\Microsoft\MCP_Server_Java> git push -u origin main
 <br>info: please complete authentication in your browser...
