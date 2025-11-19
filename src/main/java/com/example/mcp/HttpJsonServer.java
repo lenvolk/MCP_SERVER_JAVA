@@ -1,10 +1,5 @@
 package com.example.mcp;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.sun.net.httpserver.HttpServer;
-import com.sun.net.httpserver.HttpExchange;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
@@ -13,6 +8,11 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpServer;
 
 /**
  * Simple HTTP JSON API Server for MCP tools.
@@ -38,6 +38,7 @@ public class HttpJsonServer {
         server.createContext("/tools/multiply", this::handleMultiply);
         server.createContext("/tools/time", this::handleGetTime);
         server.createContext("/tools/greet", this::handleGreet);
+        server.createContext("/tools/ai_chat", this::handleAIChat);
 
         server.setExecutor(null); // Use default executor
         server.start();
@@ -86,6 +87,13 @@ public class HttpJsonServer {
             .put("endpoint", "/tools/greet")
             .put("method", "POST")
             .put("parameters", "{\"name\": string}");
+        
+        toolsArray.addObject()
+            .put("name", "ai_chat")
+            .put("description", "Chat with Azure AI Foundry agent")
+            .put("endpoint", "/tools/ai_chat")
+            .put("method", "POST")
+            .put("parameters", "{\"prompt\": string, \"max_tokens\": number (optional), \"temperature\": number (optional)}");
 
         sendJsonResponse(exchange, 200, response);
     }
@@ -220,6 +228,53 @@ public class HttpJsonServer {
         
         try (OutputStream os = exchange.getResponseBody()) {
             os.write(bytes);
+        }
+    }
+
+    private void handleAIChat(HttpExchange exchange) throws IOException {
+        if (!"POST".equals(exchange.getRequestMethod())) {
+            sendError(exchange, 405, "Method not allowed. Use POST.");
+            return;
+        }
+
+        try {
+            Map<String, Object> params = parseJsonBody(exchange);
+            
+            if (!params.containsKey("prompt")) {
+                sendError(exchange, 400, "Missing required parameter: prompt");
+                return;
+            }
+
+            String prompt = params.get("prompt").toString();
+            
+            int maxTokens = 500;
+            if (params.containsKey("max_tokens")) {
+                maxTokens = ((Number) params.get("max_tokens")).intValue();
+            }
+            
+            double temperature = 0.7;
+            if (params.containsKey("temperature")) {
+                temperature = getNumberParam(params, "temperature");
+            }
+
+            AzureAIClient aiClient = AzureAIClient.getInstance();
+            String aiResponse = aiClient.chat(prompt, maxTokens, temperature);
+
+            ObjectNode response = mapper.createObjectNode();
+            response.put("tool", "ai_chat");
+            response.put("prompt", prompt);
+            response.put("response", aiResponse);
+
+            sendJsonResponse(exchange, 200, response);
+
+        } catch (Exception e) {
+            System.err.println("ERROR in handleAIChat: " + e.getMessage());
+            e.printStackTrace();
+            try {
+                sendError(exchange, 500, "AI Chat error: " + e.getMessage());
+            } catch (Exception ex) {
+                System.err.println("Failed to send error response: " + ex.getMessage());
+            }
         }
     }
 

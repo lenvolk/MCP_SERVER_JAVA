@@ -1,10 +1,10 @@
 package com.example.mcp;
 
+import io.modelcontextprotocol.json.McpJsonMapper;
 import io.modelcontextprotocol.server.McpServer;
 import io.modelcontextprotocol.server.McpSyncServer;
 import io.modelcontextprotocol.server.transport.StdioServerTransportProvider;
 import io.modelcontextprotocol.spec.McpSchema;
-import io.modelcontextprotocol.json.McpJsonMapper;
 
 /**
  * Main entry point for the MCP Server.
@@ -63,7 +63,8 @@ public class Main {
                     ToolsProvider.getAddTool(),
                     ToolsProvider.getMultiplyTool(),
                     ToolsProvider.getCurrentTimeTool(),
-                    ToolsProvider.getGreetingTool()
+                    ToolsProvider.getGreetingTool(),
+                    ToolsProvider.getAIChatTool()
                 )
                 .resources(
                     ResourcesProvider.getServerInfoResource(),
@@ -94,6 +95,7 @@ public class Main {
         System.out.println("  http://localhost:" + port + "/tools/multiply - Multiply two numbers");
         System.out.println("  http://localhost:" + port + "/tools/time    - Get current time");
         System.out.println("  http://localhost:" + port + "/tools/greet   - Greet by name");
+        System.out.println("  http://localhost:" + port + "/tools/ai_chat - Chat with AI agent");
         System.out.println("\nPress Ctrl+C to stop the server");
         
         // Keep server running

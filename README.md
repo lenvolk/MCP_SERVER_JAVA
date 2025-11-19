@@ -10,6 +10,8 @@ This MCP server provides:
 - **add**: Add two numbers together
 - **multiply**: Multiply two numbers
 - **get_current_time**: Get the current server time
+- **greet**: Greet a person by name
+- **ai_chat**: Send prompts to Azure AI Foundry agent and get AI-powered responses
 
 ### Resources
 - **server-info**: Information about the MCP server
@@ -36,7 +38,11 @@ This will create an executable JAR file: `target/mcp-server-java-1.0.0.jar`
 
 ## Running the Server
 
-Run the server directly:
+## Run the server directly:
+Export the Azure OpenAI API Key in Powershell :
+[System.Environment]::SetEnvironmentVariable('AZURE_OPENAI_API_KEY', '8WK1BOVkW36yYj4trpMnIbSdceMgDQn5YcGbkZZxpovPJNgMaTCRJQQJ99BHACHYHv6XJ3w3AAAAACOGzTEt')      
+Check that the environment variable is set 
+c:\>echo  $env:AZURE_OPENAI_API_KEY
 
 🚀 Usage
 ## Start HTTP Server:
@@ -65,11 +71,12 @@ mvn exec:java "-Dexec.mainClass=com.example.mcp.client.McpJavaClient"
 
 <br>HTTP JSON API Server started successfully!
 <br>API Endpoints:
- <br> http://localhost:8080/tools         - List available tools
-<br>  http://localhost:8080/tools/add     - Add two numbers
+ <br> http://localhost:8080/tools          - List available tools
+<br>  http://localhost:8080/tools/add      - Add two numbers
 <br>  http://localhost:8080/tools/multiply - Multiply two numbers
-<br>  http://localhost:8080/tools/time    - Get current time
-<br>  http://localhost:8080/tools/greet   - Greet by name
+<br>  http://localhost:8080/tools/time     - Get current time
+<br>  http://localhost:8080/tools/greet    - Greet by name
+<br> http://localhost:8080/tools/ai_chat   - Chat with AI agent
 
 <br><br><br>
 # List all tools
@@ -86,6 +93,16 @@ curl -X GET http://localhost:8080/tools/time
 
 # Greet someone
 curl -X POST http://localhost:8080/tools/greet -H "Content-Type: application/json" -d '{"name":"Steve"}'
+
+# Chat with AI Agent
+curl -X POST http://localhost:8080/tools/ai_chat -H "Content-Type: application/json" -d '{"prompt": "What is Azure AI Foundry?"}'
+
+curl -X POST http://localhost:8080/tools/ai_chat -H "Content-Type: application/json" -d '{"prompt": "Hello"}'
+ 
+ # Chat with AI Agent with Optional Parameters
+ curl -X POST http://localhost:8080/tools/ai_chat -H "Content-Type: application/json" -d '{"prompt": "Explain Model Context Protocol in simple terms", "max_tokens": 200, "temperature": 0.5 }'
+
+curl -X POST http://localhost:8080/tools/ai_chat -H "Content-Type: application/json" -d '{"prompt": "Write a haiku about coding and show the full response", "max_tokens": 200, "temperature": 0.5 }'
 
 🚀 Usage
 ## Start HTTP Server:
