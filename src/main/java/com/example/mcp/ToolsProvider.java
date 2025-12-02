@@ -1,15 +1,16 @@
 package com.example.mcp;
 
-import io.modelcontextprotocol.server.McpServerFeatures;
-import io.modelcontextprotocol.spec.McpSchema;
-import io.modelcontextprotocol.json.McpJsonMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import io.modelcontextprotocol.json.McpJsonMapper;
+import io.modelcontextprotocol.server.McpServerFeatures;
+import io.modelcontextprotocol.spec.McpSchema;
 
 /**
  * Provides tool implementations for the MCP server.
@@ -152,6 +153,69 @@ public class ToolsProvider {
                 List.of(new McpSchema.TextContent(greeting)),
                 false
             );
+        });
+    }
+
+    public static McpServerFeatures.SyncToolSpecification getAIChatTool() {
+        McpJsonMapper mapper = McpJsonMapper.getDefault();
+        
+        String schemaJson = """
+                {
+                    "type": "object",
+                    "properties": {
+                        "prompt": {
+                            "type": "string",
+                            "description": "The prompt to send to the AI agent"
+                        },
+                        "max_tokens": {
+                            "type": "number",
+                            "description": "Maximum tokens in response (default: 500)"
+                        },
+                        "temperature": {
+                            "type": "number",
+                            "description": "Temperature for response generation 0.0-1.0 (default: 0.7)"
+                        }
+                    },
+                    "required": ["prompt"]
+                }
+                """;
+
+        McpSchema.Tool tool = McpSchema.Tool.builder()
+            .name("ai_chat")
+            .description("Send a prompt to Azure AI Foundry agent and get AI-powered response")
+            .inputSchema(mapper, schemaJson)
+            .build();
+
+        return new McpServerFeatures.SyncToolSpecification(tool, null, (exchange, request) -> {
+            logger.info("Tool 'ai_chat' called");
+            try {
+                Map<String, Object> arguments = request.arguments();
+                String prompt = (String) arguments.get("prompt");
+                
+                Integer maxTokens = 500;
+                if (arguments.containsKey("max_tokens")) {
+                    maxTokens = ((Number) arguments.get("max_tokens")).intValue();
+                }
+                
+                Double temperature = 0.7;
+                if (arguments.containsKey("temperature")) {
+                    temperature = ((Number) arguments.get("temperature")).doubleValue();
+                }
+                
+                AzureAIClient aiClient = AzureAIClient.getInstance();
+                String response = aiClient.chat(prompt, maxTokens, temperature);
+                
+                return new McpSchema.CallToolResult(
+                    List.of(new McpSchema.TextContent(response)),
+                    false
+                );
+            } catch (Exception e) {
+                logger.error("Error in ai_chat tool", e);
+                return new McpSchema.CallToolResult(
+                    List.of(new McpSchema.TextContent("Error: " + e.getMessage())),
+                    true
+                );
+            }
         });
     }
 }

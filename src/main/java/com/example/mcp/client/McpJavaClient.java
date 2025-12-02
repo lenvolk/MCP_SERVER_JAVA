@@ -1,14 +1,14 @@
 package com.example.mcp.client;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * Simple Java client for connecting to the MCP Server HTTP JSON API.
@@ -90,6 +90,17 @@ public class McpJavaClient {
         return callTool("/tools/greet", params);
     }
 
+
+    /**
+     * Call the AI Chat tool with a prompt
+     */
+    public JsonNode aiChat(String prompt) throws IOException, InterruptedException {
+        ObjectNode params = mapper.createObjectNode();
+        params.put("prompt", prompt);
+
+        return callTool("/tools/ai_chat", params);
+    }
+
     /**
      * Helper method to call a tool with JSON parameters
      */
@@ -149,6 +160,14 @@ public class McpJavaClient {
             JsonNode greetResult = client.greet("Alice");
             System.out.println(greetResult.toPrettyString());
             System.out.println();
+
+            // Test AI Chat tool
+            System.out.println("6. Testing AI Chat tool (\"prompt\"):");
+            JsonNode aiChatResult = client.aiChat("Hello how are you?");
+            System.out.println(aiChatResult.toPrettyString());
+            System.out.println();
+
+            
 
             System.out.println("=== All tests completed successfully! ===");
 
