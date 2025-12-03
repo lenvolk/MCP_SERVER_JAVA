@@ -163,7 +163,7 @@ public class McpJavaClient {
 
             // Test AI Chat tool
             System.out.println("6. Testing AI Chat tool (\"prompt\"):");
-            JsonNode aiChatResult = client.aiChat("Hello how are you?");
+            JsonNode aiChatResult = client.aiChat("Tell me a joke about java programming.");
             System.out.println(aiChatResult.toPrettyString());
             System.out.println();
 
