@@ -40,7 +40,7 @@ This will create an executable JAR file: `target/mcp-server-java-1.0.0.jar`
 
 ## Run the server directly:
 Export the Azure OpenAI API Key in Powershell :
-$env:AZURE_OPENAI_API_KEY="8WK1BOVkW36yYj4trpMnIbSdceMgDQn5YcGbkZZxpovPJNgMaTCRJQQJ99BHACHYHv6XJ3w3AAAAACOGzTEt"   
+$env:AZURE_OPENAI_API_KEY="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"   
 Check that the environment variable is set 
 c:\>echo  $env:AZURE_OPENAI_API_KEY
 
