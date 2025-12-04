@@ -32,7 +32,8 @@ public class AzureAIClient {
     // Azure OpenAI configuration
     private static final String ENDPOINT = "https://demo-ai-agent-project-resource.openai.azure.com";
     private static final String DEPLOYMENT = "gpt-4o-mini";
-    private static final String API_VERSION = "2024-08-01-preview";
+    private static final String API_VERSION = "2024-12-01-preview";
+    private String apiVersion;
     
     private AzureAIClient() {
         logger.info("Initializing Azure AI Client...");
@@ -52,6 +53,9 @@ public class AzureAIClient {
         
         String envDeployment = System.getenv("AZURE_OPENAI_DEPLOYMENT");
         this.deploymentName = (envDeployment != null && !envDeployment.isEmpty()) ? envDeployment : DEPLOYMENT;
+        
+        String envApiVersion = System.getenv("AZURE_OPENAI_API_VERSION");
+        this.apiVersion = (envApiVersion != null && !envApiVersion.isEmpty()) ? envApiVersion : API_VERSION;
         
         this.httpClient = HttpClient.newBuilder()
             .connectTimeout(Duration.ofSeconds(30))
@@ -91,7 +95,7 @@ public class AzureAIClient {
             
             // Build request URL
             String url = String.format("%s/openai/deployments/%s/chat/completions?api-version=%s",
-                endpoint, deploymentName, API_VERSION);
+                endpoint, deploymentName, apiVersion);
             
             logger.info("Request URL: {}", url);
             
@@ -104,8 +108,11 @@ public class AzureAIClient {
             messages.add(message);
             
             requestBody.set("messages", messages);
-            requestBody.put("max_tokens", maxTokens);
-            requestBody.put("temperature", temperature);
+            requestBody.put("max_completion_tokens", maxTokens);
+            // o4-mini only supports temperature=1, so only set if it's 1.0
+            if (temperature == 1.0) {
+                requestBody.put("temperature", temperature);
+            }
             
             String jsonBody = mapper.writeValueAsString(requestBody);
             logger.info("Request body: {}", jsonBody);
@@ -156,6 +163,6 @@ public class AzureAIClient {
      * Send a chat prompt with default parameters
      */
     public String chat(String prompt) {
-        return chat(prompt, 500, 0.7);
+        return chat(prompt, 500, 1.0);
     }
 }

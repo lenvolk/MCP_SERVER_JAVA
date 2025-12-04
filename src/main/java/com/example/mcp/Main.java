@@ -97,8 +97,18 @@ public class Main {
         System.out.println("  http://localhost:" + port + "/tools/greet   - Greet by name");
         System.out.println("  http://localhost:" + port + "/tools/ai_chat - Chat with AI agent");
         System.out.println("\nPress Ctrl+C to stop the server");
+        System.out.flush();
         
-        // Keep server running
-        Thread.currentThread().join();
+        // Create a daemon thread and keep the main thread alive
+        Thread keepAlive = new Thread(() -> {
+            try {
+                Thread.sleep(Long.MAX_VALUE);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        });
+        keepAlive.setDaemon(false);
+        keepAlive.start();
+        keepAlive.join();
     }
 }

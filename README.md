@@ -1,258 +1,169 @@
 # MCP Server Java
 
-A Model Context Protocol (MCP) server implementation in Java, demonstrating the core MCP features including tools, resources, and prompts.
+Model Context Protocol (MCP) server in Java with Azure OpenAI integration.
+
+## Architecture
+
+```mermaid
+graph TD
+    A[Client] -->|HTTP/STDIO| B[MCP Server]
+    B --> C[Tools]
+    B --> D[Resources]
+    B --> E[Prompts]
+    C --> F[Math Operations]
+    C --> G[AI Chat]
+    G -->|API Call| H[Azure OpenAI]
+    
+    style H fill:#0078d4,color:#fff
+    style G fill:#00bcf2,color:#000
+```
 
 ## Features
 
-This MCP server provides:
-
-### Tools
-- **add**: Add two numbers together
-- **multiply**: Multiply two numbers
-- **get_current_time**: Get the current server time
-- **greet**: Greet a person by name
-- **ai_chat**: Send prompts to Azure AI Foundry agent and get AI-powered responses
-
-### Resources
-- **server-info**: Information about the MCP server
-- **documentation**: Server documentation and usage examples
-
-### Prompts
-- **math_helper**: Get help with mathematical calculations
-- **current_time**: Get the current time
+**Tools**: `add`, `multiply`, `get_current_time`, `greet`, `ai_chat`  
+**Resources**: `server-info`, `documentation`  
+**Prompts**: `math_helper`, `current_time`
 
 ## Prerequisites
 
-- Java 17 or higher
+- Java 17+
 - Maven 3.6+
+- Azure OpenAI account (for ai_chat tool)
 
-## Building the Server
+## Quick Start
 
-Build the project using Maven:
+### 1. Build
 
 ```bash
 mvn clean package
 ```
 
-This will create an executable JAR file: `target/mcp-server-java-1.0.0.jar`
+### 2. Configure Azure OpenAI
 
-## Running the Server
-
-## Run the server directly:
-Export the Azure OpenAI API Key in Powershell :
-$env:AZURE_OPENAI_API_KEY="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"   
-Check that the environment variable is set 
-c:\>echo  $env:AZURE_OPENAI_API_KEY
-
-
-🚀 Usage
-## Start HTTP Server:
-java -jar target/mcp-server-java-1.0.0.jar --http
-
-
-```bash
-java -jar target/mcp-server-java-1.0.0.jar 
+**PowerShell:**
+```powershell
+$env:AZURE_OPENAI_API_KEY="your-api-key"
+$env:AZURE_OPENAI_ENDPOINT="https://your-resource.cognitiveservices.azure.com"
+$env:AZURE_OPENAI_DEPLOYMENT="o4-mini"
+$env:AZURE_OPENAI_API_VERSION="2024-12-01-preview"
 ```
 
-## Run Java Server:
-Working Solution
-Step 1: Start the HTTP Server (in one terminal)
-java -jar target/mcp-server-java-1.0.0.jar --http  (need http server to be running first)
+**Bash:**
+```bash
+export AZURE_OPENAI_API_KEY="your-api-key"
+export AZURE_OPENAI_ENDPOINT="https://your-resource.cognitiveservices.azure.com"
+export AZURE_OPENAI_DEPLOYMENT="o4-mini"
+export AZURE_OPENAI_API_VERSION="2024-12-01-preview"
+```
 
-## Run Java Client:
-Step 2: Run the Java Client (in another terminal)
-mvn exec:java "-Dexec.mainClass=com.example.mcp.client.McpJavaClient"
+> **⚠️ Important**: The `o4-mini` model requires `max_completion_tokens` (not `max_tokens`) and only supports `temperature=1.0`.
 
-## NPX Node Package eXecute 
-## nxp command to test over web page
-<br>npx @modelcontextprotocol/inspector java -jar target/mcp-server-java-1.0.0.jar
-<br>create a npx test harness to check out and test the functionality ! 
+### 3. Run Server & Client
 
-## Testing out the tools :
+You'll need **two separate terminals**:
 
-<br>HTTP JSON API Server started successfully!
-<br>API Endpoints:
- <br> http://localhost:8080/tools          - List available tools
-<br>  http://localhost:8080/tools/add      - Add two numbers
-<br>  http://localhost:8080/tools/multiply - Multiply two numbers
-<br>  http://localhost:8080/tools/time     - Get current time
-<br>  http://localhost:8080/tools/greet    - Greet by name
-<br>  http://localhost:8080/tools/ai_chat   - Chat with AI agent
+**Terminal 1 - Server:**
+```bash
+java -jar target/mcp-server-java-1.0.0.jar --http
+```
+Keep this running. Server starts on `http://localhost:8080`
 
-<br><br><br>
-# List all tools
-curl -X GET http://localhost:8080/tools
+**Terminal 2 - Client (Testing):**
 
-# Add two numbers
+Use this terminal to test all tools with curl commands below.
+
+### 4. Test Tools
+
+```bash
+# List tools
+curl http://localhost:8080/tools
+
+# Math operations
 curl -X POST http://localhost:8080/tools/add -H "Content-Type: application/json" -d '{"a":"7","b":"51"}'
-
-# Multiply two numbers  
 curl -X POST http://localhost:8080/tools/multiply -H "Content-Type: application/json" -d '{"x":"7","y":"70"}'
 
-# Get current time
-curl -X GET http://localhost:8080/tools/time
+# AI chat
+curl -X POST http://localhost:8080/tools/ai_chat -H "Content-Type: application/json" -d '{"prompt":"What is MCP?"}'
 
-# Greet someone
+# Other tools
+curl http://localhost:8080/tools/time
 curl -X POST http://localhost:8080/tools/greet -H "Content-Type: application/json" -d '{"name":"Steve"}'
+```
 
-# Chat with AI Agent
-curl -X POST http://localhost:8080/tools/ai_chat -H "Content-Type: application/json" -d '{"prompt": "What is Azure AI Foundry?"}'
+## Integration
 
-curl -X POST http://localhost:8080/tools/ai_chat -H "Content-Type: application/json" -d '{"prompt": "Hello"}'
- 
- # Chat with AI Agent with Optional Parameters
- curl -X POST http://localhost:8080/tools/ai_chat -H "Content-Type: application/json" -d '{"prompt": "Explain Model Context Protocol in simple terms", "max_tokens": 200, "temperature": 0.5 }'
+### MCP Inspector
+```bash
+npx @modelcontextprotocol/inspector java -jar target/mcp-server-java-1.0.0.jar
+```
 
-curl -X POST http://localhost:8080/tools/ai_chat -H "Content-Type: application/json" -d '{"prompt": "Write a haiku about coding", "max_tokens": 200, "temperature": 0.5 }'
+### Claude Desktop
 
-🚀 Usage
-## Start HTTP Server:
-java -jar target/mcp-server-java-1.0.0.jar --http
-
-## Start STDIO Server:
-java -jar target/mcp-server-java-1.0.0.jar
-
-
-
-
-## git hub integration
-<br>in command prompt in git directory:
-<br>git status
-<br>On branch main
-<br>nothing to commit, working tree clean
-<br>PS C:\Users\stethompson\Microsoft\MCP_Server_Java> git init
-<br>Reinitialized existing Git repository in C:/Users/stethompson/Microsoft/MCP_Server_Java/.git/
-<br>PS C:\Users\stethompson\Microsoft\MCP_Server_Java> git add .
-<br>PS C:\Users\stethompson\Microsoft\MCP_Server_Java> git remote add origin https://github.com/SteveThompson_msftcae/MCP_SERVER_JAVA.git
-<br>git remove -v  (check remote exists)
-<br>PS C:\Users\stethompson\Microsoft\MCP_Server_Java> git branch -M main
-<br>PS C:\Users\stethompson\Microsoft\MCP_Server_Java> git push -u origin main
-<br>info: please complete authentication in your browser...
-<br>fatal: The request is not supported
-<br>Username for 'https://github.com':
-(authenticated with code)
-<br>PS C:\Users\stethompson\Microsoft\MCP_Server_Java> git push -u origin main
-<br>Enumerating objects: 48, done.
-<br>Counting objects: 100% (48/48), done.
-<br>Delta compression using up to 8 threads
-<br>Compressing objects: 100% (31/31), done.
-<br>Writing objects: 100% (48/48), 23.38 KiB | 1.80 MiB/s, done.
-<br>Total 48 (delta 8), reused 0 (delta 0), pack-reused 0 (from 0)
-<br>remote: Resolving deltas: 100% (8/8), done.
-<br>To https://github.com/SteveThompson_msftcae/MCP_SERVER_JAVA.git
-<br> * [new branch]      main -> main
-<br>branch 'main' set up to track 'origin/main'.
-
-
-
-
-
-### With Claude Desktop
-
-Add the server to your Claude Desktop configuration:
-
-**macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
-**Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
+**Config**: `%APPDATA%\Claude\claude_desktop_config.json` (Windows) or `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS)
 
 ```json
 {
   "mcpServers": {
     "mcp-server-java": {
       "command": "java",
-      "args": [
-        "-jar",
-        "C:\\absolute\\path\\to\\target\\mcp-server-java-1.0.0.jar"
-      ]
+      "args": ["-jar", "C:\\path\\to\\target\\mcp-server-java-1.0.0.jar"]
     }
   }
 }
 ```
 
-Replace the path with the absolute path to your JAR file.
+### VS Code
 
-### With VS Code
-
-The server is already configured in `.vscode/mcp.json`. After building:
-
-1. Open VS Code
-2. Press `Cmd+Shift+P` (Mac) or `Ctrl+Shift+P` (Windows)
-3. Select "MCP: Add server..."
-4. The server will be available to connect
+Configure in `.vscode/mcp.json` then press `Ctrl+Shift+P` → "MCP: Add server..."
 
 ## Development
 
 ### Project Structure
 
 ```
-mcp-server-java/
-├── src/
-│   └── main/
-│       └── java/
-│           └── com/
-│               └── example/
-│                   └── mcp/
-│                       ├── Main.java              # Entry point
-│                       ├── ToolsProvider.java     # Tool implementations
-│                       ├── ResourcesProvider.java # Resource implementations
-│                       └── PromptsProvider.java   # Prompt implementations
-├── .vscode/
-│   └── mcp.json                  # VS Code MCP configuration
-├── pom.xml                       # Maven configuration
-└── README.md                     # This file
+src/main/java/com/example/mcp/
+├── Main.java              # Entry point
+├── HttpJsonServer.java    # HTTP API
+├── AzureAIClient.java     # Azure OpenAI client
+├── ToolsProvider.java     # Tool implementations
+├── ResourcesProvider.java # Resource implementations
+└── PromptsProvider.java   # Prompt implementations
 ```
 
-### Adding New Tools
+### Adding Tools
 
-To add a new tool:
-
-1. Open `src/main/java/com/example/mcp/ToolsProvider.java`
-2. Add the tool definition in `registerTools()`
-3. Implement the tool logic in the switch statement
-
-Example:
+Edit `ToolsProvider.java`:
 
 ```java
-// In the list tools handler
+// Register tool
 Tool myTool = new Tool();
 myTool.setName("my_tool");
-myTool.setDescription("Description of what my tool does");
-// ... set input schema
+myTool.setDescription("What it does");
 tools.add(myTool);
 
-// In the call tool handler
+// Handle tool call
 case "my_tool":
-    // Your implementation here
-    break;
+    return new TextContent("Result");
 ```
 
-### Adding New Resources
+## Troubleshooting
 
-To add a new resource:
+**Server exits immediately**: Use `Start-Process powershell -ArgumentList "-NoExit", "-Command", "java -jar target/mcp-server-java-1.0.0.jar --http"` to run in separate window.
 
-1. Open `src/main/java/com/example/mcp/ResourcesProvider.java`
-2. Add the resource in `registerResources()`
-3. Implement the read handler for your resource URI
+**Azure API errors**: Check API version (2024-12-01-preview required) and model constraints (o4-mini needs `max_completion_tokens`, `temperature=1.0`).
 
-### Testing with MCP Inspector
-
-You can test your server using the MCP Inspector:
+## Testing with MCP Inspector
 
 ```bash
 npx @modelcontextprotocol/inspector java -jar target/mcp-server-java-1.0.0.jar
 ```
 
-## Debugging
+## Resources
 
-The server uses SLF4J for logging. Logs are written to stderr and will appear in your terminal or the client's log viewer.
-
-To enable verbose logging, you can adjust the logging level in your slf4j configuration.
-
-## Learn More
-
-- [Model Context Protocol Documentation](https://modelcontextprotocol.io)
+- [MCP Documentation](https://modelcontextprotocol.io)
 - [MCP Java SDK](https://github.com/modelcontextprotocol/java-sdk)
 - [MCP Specification](https://spec.modelcontextprotocol.io)
 
 ## License
 
-MIT License - See LICENSE file for details
+MIT
