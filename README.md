@@ -42,7 +42,7 @@ mvn clean package
 
 **PowerShell:**
 ```powershell
-$env:AZURE_OPENAI_API_KEY="your-api-key"
+$env:AZURE_OPENAI_API_KEY="your-api-key-here"
 $env:AZURE_OPENAI_ENDPOINT="https://your-resource.cognitiveservices.azure.com"
 $env:AZURE_OPENAI_DEPLOYMENT="o4-mini"
 $env:AZURE_OPENAI_API_VERSION="2024-12-01-preview"
@@ -93,28 +93,188 @@ curl -X POST http://localhost:8080/tools/greet -H "Content-Type: application/jso
 ## Integration
 
 ### MCP Inspector
-```bash
+
+The MCP Inspector provides a web-based UI to test your MCP server interactively.
+
+**Prerequisites:**
+- Azure OpenAI environment variables must be set (see step 2 above)
+- Server must be rebuilt: `mvn clean package -DskipTests`
+
+**Step-by-Step Instructions:**
+
+**Terminal 1** - Stop if anything is running (Ctrl+C)
+
+**Terminal 2** - Run these commands:
+
+```powershell
+# 1. Set environment variables (required for ai_chat tool)
+$env:AZURE_OPENAI_API_KEY="your-api-key-here"
+$env:AZURE_OPENAI_ENDPOINT="https://your-resource.cognitiveservices.azure.com"
+$env:AZURE_OPENAI_DEPLOYMENT="o4-mini"
+$env:AZURE_OPENAI_API_VERSION="2024-12-01-preview"
+
+# 2. Start the Inspector (it will launch the server automatically)
 npx @modelcontextprotocol/inspector java -jar target/mcp-server-java-1.0.0.jar
 ```
 
-### Claude Desktop
+**In the Browser:**
 
-**Config**: `%APPDATA%\Claude\claude_desktop_config.json` (Windows) or `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS)
+1. The Inspector will open automatically
+2. Verify **Transport Type** is set to **"STDIO"**
+3. Verify **Arguments** shows `-jar target/mcp-server-java-1.0.0.jar`
+4. Click **"Connect"**
 
-```json
-{
-  "mcpServers": {
-    "mcp-server-java": {
-      "command": "java",
-      "args": ["-jar", "C:\\path\\to\\target\\mcp-server-java-1.0.0.jar"]
-    }
-  }
-}
+**Testing Tools:**
+
+1. Click the **"Tools"** tab at the top of the Inspector
+2. Click **"List Tools"** to see all 5 available tools
+3. Select a tool from the list to test it
+
+**Test each tool:**
+
+- **add** - Click on "add" in the list
+  - Input: `{"a": 5, "b": 3}`
+  - Expected result: `The result is: 8`
+  
+- **multiply** - Click on "multiply" in the list  
+  - Input: `{"x": 7, "y": 6}`
+  - Expected result: `The result is: 42`
+  
+- **get_current_time** - Click on "get_current_time"
+  - No parameters needed (leave empty or use `{}`)
+  - Expected result: Current timestamp
+  
+- **greet** - Click on "greet"
+  - Input: `{"name": "Steve"}`
+  - Expected result: `Hello Steve welcome to the Java MCP Server!`
+  
+- **ai_chat** - Click on "ai_chat"
+  - Input: `{"prompt": "Say hello in 3 words"}`
+  - **Leave max_tokens empty** (uses default 500)
+  - Expected result: AI-generated greeting (e.g., "Hello my friend")
+  - ⏱️ Takes 5-10 seconds (Azure OpenAI processing time)
+
+> ⚠️ **Important for ai_chat**: The o4-mini model uses **200-400 reasoning tokens internally** before generating output. The default max_tokens=500 ensures enough tokens for both reasoning (internal thinking) and actual output. For complex prompts, use 700-1000 tokens.
+
+### VS Code Integration
+
+Add this MCP server to your VS Code project to use it with GitHub Copilot Chat.
+
+**Step-by-Step Instructions:**
+
+1. **Build the server** (if not already done)
+   ```bash
+   mvn clean package -DskipTests
+   ```
+
+2. **Create the `.vscode` folder** (if it doesn't exist)
+   - In your project root, create folder named `.vscode`
+
+3. **Create the `mcp.json` file**
+   - Copy `.vscode/mcp.json.template` to `.vscode/mcp.json`
+   - Or create `.vscode/mcp.json` manually
+
+4. **Add the server configuration**
+   
+   Edit `mcp.json` with your settings:
+
+   ```json
+   {
+     "mcpServers": {
+       "mcp-server-java": {
+         "command": "java",
+         "args": [
+           "-jar",
+           "C:\\Temp\\GIT\\MCP_SERVER_JAVA\\target\\mcp-server-java-1.0.0.jar"
+         ],
+         "env": {
+           "AZURE_OPENAI_API_KEY": "your-api-key-here",
+           "AZURE_OPENAI_ENDPOINT": "https://your-resource.cognitiveservices.azure.com",
+           "AZURE_OPENAI_DEPLOYMENT": "o4-mini",
+           "AZURE_OPENAI_API_VERSION": "2024-12-01-preview"
+         }
+       }
+     }
+   }
+   ```
+
+   > 💡 **Important:** 
+   > - Update the `args` path to match your project location
+   > - Use double backslashes (`\\`) on Windows or forward slashes (`/`) for paths
+   > - Replace Azure credentials with your actual values
+
+5. **Reload VS Code**
+   - Press `Ctrl+Shift+P` (Windows) or `Cmd+Shift+P` (Mac)
+   - Type: `Developer: Reload Window`
+   - This activates the MCP server
+
+**Verify It's Working:**
+
+1. Open GitHub Copilot Chat in VS Code
+2. Click the **attachments icon (📎)** in the chat input
+3. You should see your MCP tools listed:
+   - `add` - Add two numbers
+   - `multiply` - Multiply two numbers
+   - `get_current_time` - Get current time
+   - `greet` - Greet by name
+   - `ai_chat` - Chat with Azure OpenAI
+
+**Example Prompts to Test:**
+
+Try these prompts in GitHub Copilot Chat:
+
+**Math Operations:**
+```
+Add 42 and 58
+```
+```
+What is 15 multiplied by 8?
+```
+```
+Calculate 100 + 250, then multiply the result by 3
 ```
 
-### VS Code
+**Time and Greetings:**
+```
+What time is it?
+```
+```
+Greet me with the name Alex
+```
 
-Configure in `.vscode/mcp.json` then press `Ctrl+Shift+P` → "MCP: Add server..."
+**AI Chat Tool:**
+```
+Use the AI chat tool to write a haiku about programming
+```
+```
+Ask the AI: What are the main benefits of using MCP servers?
+```
+```
+Using ai_chat, explain the Model Context Protocol in one sentence
+```
+
+**Resources:**
+```
+Show me the server information
+```
+```
+Get the MCP documentation resource
+```
+
+**Combined Operations:**
+```
+Get the current time and greet me with the name Sarah
+```
+
+> 💡 **Tip:** You don't need to explicitly mention tool names - just ask naturally and Copilot will figure out which tools to use!
+
+**Troubleshooting:**
+
+- **Server not found:** Check that the JAR path in `mcp.json` matches your actual file location
+- **Server fails to start:** Run `java -jar target/mcp-server-java-1.0.0.jar` in terminal to see error messages
+- **Environment variables not set:** Verify the `env` section in `mcp.json` has the correct Azure credentials
+- **Tools not appearing:** Reload VS Code window (`Ctrl+Shift+P` → `Developer: Reload Window`)
+- **Check server logs:** Look at VS Code's Output panel → Select "MCP" from dropdown to see server logs
 
 ## Development
 

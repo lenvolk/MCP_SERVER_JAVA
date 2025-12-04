@@ -169,11 +169,11 @@ public class ToolsProvider {
                         },
                         "max_tokens": {
                             "type": "number",
-                            "description": "Maximum tokens in response (default: 500)"
+                            "description": "Maximum tokens for response (default: 500). o4-mini uses 200-400 tokens for internal reasoning, then generates output. Minimum 500 recommended."
                         },
                         "temperature": {
                             "type": "number",
-                            "description": "Temperature for response generation 0.0-1.0 (default: 0.7)"
+                            "description": "Temperature for response generation, o4-mini requires 1.0 (default: 1.0)"
                         }
                     },
                     "required": ["prompt"]
@@ -182,7 +182,7 @@ public class ToolsProvider {
 
         McpSchema.Tool tool = McpSchema.Tool.builder()
             .name("ai_chat")
-            .description("Send a prompt to Azure AI Foundry agent and get AI-powered response")
+            .description("Send a prompt to Azure AI Foundry agent (o4-mini) and get AI-powered response. Note: o4-mini uses reasoning tokens internally, so max_tokens includes both reasoning and output.")
             .inputSchema(mapper, schemaJson)
             .build();
 
@@ -192,18 +192,26 @@ public class ToolsProvider {
                 Map<String, Object> arguments = request.arguments();
                 String prompt = (String) arguments.get("prompt");
                 
+                // o4-mini uses reasoning tokens internally, need higher max_tokens
+                // Default 500: o4-mini often uses 200-400 tokens for reasoning alone!
                 Integer maxTokens = 500;
                 if (arguments.containsKey("max_tokens")) {
                     maxTokens = ((Number) arguments.get("max_tokens")).intValue();
                 }
                 
-                Double temperature = 0.7;
+                // o4-mini only supports temperature=1.0
+                Double temperature = 1.0;
                 if (arguments.containsKey("temperature")) {
                     temperature = ((Number) arguments.get("temperature")).doubleValue();
                 }
                 
+                logger.info("Calling Azure OpenAI with prompt: {}, maxTokens: {}, temperature: {}", 
+                    prompt, maxTokens, temperature);
+                
                 AzureAIClient aiClient = AzureAIClient.getInstance();
                 String response = aiClient.chat(prompt, maxTokens, temperature);
+                
+                logger.info("Received response from Azure OpenAI: {} characters", response.length());
                 
                 return new McpSchema.CallToolResult(
                     List.of(new McpSchema.TextContent(response)),

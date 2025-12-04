@@ -58,7 +58,7 @@ public class AzureAIClient {
         this.apiVersion = (envApiVersion != null && !envApiVersion.isEmpty()) ? envApiVersion : API_VERSION;
         
         this.httpClient = HttpClient.newBuilder()
-            .connectTimeout(Duration.ofSeconds(30))
+            .connectTimeout(Duration.ofSeconds(60))
             .build();
         
         this.mapper = new ObjectMapper();
@@ -109,10 +109,8 @@ public class AzureAIClient {
             
             requestBody.set("messages", messages);
             requestBody.put("max_completion_tokens", maxTokens);
-            // o4-mini only supports temperature=1, so only set if it's 1.0
-            if (temperature == 1.0) {
-                requestBody.put("temperature", temperature);
-            }
+            // o4-mini only supports temperature=1.0, force it regardless of input
+            requestBody.put("temperature", 1.0);
             
             String jsonBody = mapper.writeValueAsString(requestBody);
             logger.info("Request body: {}", jsonBody);
@@ -122,7 +120,7 @@ public class AzureAIClient {
                 .uri(URI.create(url))
                 .header("Content-Type", "application/json")
                 .header("api-key", apiKey)
-                .timeout(Duration.ofSeconds(30))
+                .timeout(Duration.ofSeconds(60))
                 .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
                 .build();
             
@@ -141,15 +139,30 @@ public class AzureAIClient {
             
             // Parse response JSON
             JsonNode responseJson = mapper.readTree(response.body());
+            
+            // Check if choices array exists and has elements
+            if (!responseJson.has("choices") || responseJson.path("choices").size() == 0) {
+                logger.error("Invalid response from Azure OpenAI: no choices array");
+                logger.error("Full response: {}", response.body());
+                throw new RuntimeException("Invalid response from Azure OpenAI: no choices in response");
+            }
+            
             String content = responseJson
                 .path("choices")
                 .get(0)
                 .path("message")
                 .path("content")
-                .asText();
+                .asText("");
+            
+            if (content == null || content.isEmpty() || content.equals("..")) {
+                logger.error("Empty or invalid content from Azure OpenAI");
+                logger.error("Full response: {}", response.body());
+                throw new RuntimeException("Empty or invalid content from Azure OpenAI");
+            }
             
             logger.info("Received response from Azure OpenAI");
             logger.info("Response length: {} characters", content.length());
+            logger.info("Response content: {}", content);
             
             return content;
             

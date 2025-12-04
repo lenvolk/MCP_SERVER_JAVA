@@ -1,5 +1,7 @@
 package com.example.mcp;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.modelcontextprotocol.json.McpJsonMapper;
 import io.modelcontextprotocol.server.McpServer;
 import io.modelcontextprotocol.server.McpSyncServer;
@@ -47,9 +49,26 @@ public class Main {
     private static void startStdioServer() throws InterruptedException {
         System.err.println("Starting MCP Server with STDIO transport...");
 
+        // Create a custom ObjectMapper configured to ignore unknown properties
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        
+        // Create a custom MCP JSON mapper with our configured ObjectMapper
+        McpJsonMapper mcpMapper;
+        try {
+            Class<?> jacksonMapperClass = Class.forName("io.modelcontextprotocol.json.jackson.JacksonMcpJsonMapper");
+            mcpMapper = (McpJsonMapper) jacksonMapperClass
+                .getConstructor(ObjectMapper.class)
+                .newInstance(objectMapper);
+            System.err.println("Configured Jackson to ignore unknown properties");
+        } catch (Exception e) {
+            System.err.println("Warning: Could not create custom mapper, using default: " + e.getMessage());
+            mcpMapper = McpJsonMapper.getDefault();
+        }
+
         // Create stdio transport provider
         StdioServerTransportProvider transportProvider = 
-            new StdioServerTransportProvider(McpJsonMapper.getDefault());
+            new StdioServerTransportProvider(mcpMapper);
 
         // Build and configure the server with tools, resources, and prompts
         McpSyncServer server = McpServer.sync(transportProvider)

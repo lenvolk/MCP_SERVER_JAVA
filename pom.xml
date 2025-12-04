@@ -16,7 +16,7 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <mcp.version>0.14.1</mcp.version>
+        <mcp.version>0.17.0</mcp.version>
         <jackson.version>2.17.0</jackson.version>
         <slf4j.version>2.0.9</slf4j.version>
     </properties>

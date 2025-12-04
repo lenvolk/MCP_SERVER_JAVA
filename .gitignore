@@ -42,7 +42,6 @@ buildNumber.properties
 *.iws
 *.ipr
 .vscode/
-!.vscode/mcp.json
 .classpath
 .project
 .settings/
@@ -55,3 +54,8 @@ Thumbs.db
 # Build output
 out/
 build/
+
+# Memory and test files
+.docs/
+test-*.json
+META-INF/
